@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <a class="nav-link text-light" href="">{{request.user}}</a>
+    <a class="nav-link text-light" href="{% url 'statement' %}">Statement</a>
+    <a class="nav-link text-light" href="{% url 'logout' %}">Log out</a>
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row mb-3">
+            <div class="col-3">
+                <div class="container" style="color: #00724c;">
+                    <h1>Edit Movement</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="container">
+                    <form method="post", action="" novalidate>{% csrf_token %}
+                        <div class="form">
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="container">
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <p class="m-0">{{error}}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            <div class="container mb-2">
+                                <label for="{{ form.movement_date.id_for_label }}" class="form-label">Date:</label>
+                                {{ form.movement_date }}
+                            </div>
+                            <div class="container mb-2">
+                                <label for="{{ form.movement_direction.id_for_label }}" class="form-label">Direction:</label>
+                                {{ form.movement_direction }}
+                            </div>
+                            <div class="container mb-2">
+                                <label for="{{ form.account.id_for_label }}" class="form-label">Account:</label>
+                                {{ form.account }}
+                            </div>
+                            <div class="container mb-2">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category:</label>
+                                {{ form.category }}
+                            </div>
+                            <div class="container mb-2">
+                                <label for="{{ form.movement_amount.id_for_label }}" class="form-label">Import:</label>
+                                {{ form.movement_amount }}
+                            </div>
+                            <div class="container mb-2">
+                                <label for="{{ form.movement_description.id_for_label }}" class="form-label">Description:</label>
+                                {{ form.movement_description }}
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <input type="submit" value="Edit" class="btn mt-2" style="background-color: #00724c;color: white;">
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{% url 'list_movement' %}" class="btn mt-2" style="background-color: #00724c;color: white;">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </form>
+                </div>
+            </div>
+        </div>    
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        const form = document.querySelector("form")
+
+        form.addEventListener('submit', e => {
+            if (!form.checkValidity()) {
+                e.preventDefault()
+            }
+
+            form.classList.add('was-validated')
+        })
+    </script> 
+{% endblock %}

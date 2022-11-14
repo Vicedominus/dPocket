@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <a class="nav-link text-light" href="">{{request.user}}</a>
+    <a class="nav-link text-light" href="{% url 'settings' %}">Statement</a>
+    <a class="nav-link text-light" href="{% url 'logout' %}">Log out</a>
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row mb-3">
+            <div class="col-3">
+                <div class="container" style="color: #00724c;">
+                    <h1>Edit Category</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="container">
+                    <form method="post", action="" novalidate>{% csrf_token %}
+                        <div class="form">
+                            {% if form.non_field_errors %}
+                                {% for error in form.non_field_errors %}
+                                <div class="container">
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <p class="m-0">{{error}}</p>
+                                        <button class="btn-close" aria-label="close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="container mb-2">
+                                <h3>Do you want to delete this category "{{ category.category_name }}"?</h3>
+                                {{ form }}
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <input type="submit" value="Delete" class="btn mt-2" style="background-color: #00724c;color: white;">
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{% url 'settings' %}" class="btn mt-2" style="background-color: #00724c;color: white;">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        const form = document.querySelector("form")
+
+        form.addEventListener('submit', e => {
+            if (!form.checkValidity()) {
+                e.preventDefault()
+            }
+
+            form.classList.add('was-validated')
+        })
+    </script> 
+{% endblock %}
+
+<h1>Edit account</h1>
+<a href="{% url 'settings' %}">Go back to list</a>
+
+
+<form method="POST", action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>

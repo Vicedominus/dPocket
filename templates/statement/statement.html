@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <a class="nav-link text-light" href="">{{request.user}}</a>
+    <a class="nav-link text-light" href="{% url 'settings' %}">Settings</a>
+    <a class="nav-link text-light" href="{% url 'logout' %}">Log out</a>
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="container" style="position: absolute;z-index: 10000;">
+                <div class="row justify-content-center">
+                    <div class="col-5">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <p class="m-0">{{message}}</p>
+                            <button class="btn-close" aria-label="close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row mb-3">
+            <div class="col-3">
+                <div class="container" style="color: #00724c;">
+                    <h1>Statement</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-6 me-lg-3 mb-3 mb-md-0">
+                <div class="row">
+                    <div class="col">
+                        <h4>Last movements</h4>
+                    </div>
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="col col-auto">
+                                <a href="{% url 'add_movement' %}" class="btn" style="background-color: #00724c;color: white;"><i class="fa-solid fa-plus"></i></a>
+                                <a href="{% url 'transfer' %}" class="btn" style="background-color: #00724c;color: white;">Transfer</a>
+                                <a href="{% url 'list_movement' %}" class="btn" style="background-color: #00724c;color: white;">See all</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover mt-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Account</th>
+                            <th scope="col">Category</th>
+                            <th scope="col" style="text-align: right">Import</th>
+                            <th scope="col" style="text-align: right"><i class="fa-solid fa-dollar-sign"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mov in last_movements %}
+                        <tr>
+                            <td>{{ mov.account }}</td>
+                            {% if mov.category == None %}
+                                <td></td>
+                            {% else %}
+                                <td>{{ mov.category }}</td>
+                            {% endif %}
+                            {% if mov.movement_direction == 'OUT' %}
+                                <td style="color: red;text-align: right">
+                                    -{{mov.movement_amount}}
+                                </td>
+                            {% elif mov.movement_direction == 'IN' %}
+                                <td style="color: green;text-align: right">
+                                    {{mov.movement_amount}}
+                                </td>
+                            {% endif %} 
+                            <td style="text-align: right">{{mov.account.currency}}</td>   
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4 ms-lg-3">
+                <div class="row">
+                    <div class="col">
+                        <h4>Accounts</h4>
+                    </div>
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="col col-auto">
+                                <a href="{% url 'add_account' %}" class="btn" style="background-color: #00724c;color: white;"><i class="fa-solid fa-plus"></i></a>
+                                <a href="{% url 'list_account' %}" class="btn" style="background-color: #00724c;color: white;">See all</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover mt-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Account</th>
+                            <th scope="col" style="text-align: right">Amount</th>
+                            <th scope="col" style="text-align: right"><i class="fa-solid fa-dollar-sign"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in accounts %}
+                        <tr>
+                            <td>{{ account.account_name }}</td>
+                            {% if account.account_amount < 0 %}
+                                <td style="color: red;text-align: right">{{ account.account_amount }}</td>
+                            {% else %}
+                                <td style="color: green;text-align: right">{{ account.account_amount }}</td>
+                            {% endif %}
+                            <td style="text-align: right">{{ account.currency }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  
+{% endblock %}

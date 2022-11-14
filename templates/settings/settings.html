@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <a class="nav-link text-light" href="">{{request.user}}</a>
+    <a class="nav-link text-light" href="{% url 'statement' %}">Statement</a>
+    <a class="nav-link text-light" href="{% url 'logout' %}">Log out</a>
+{% endblock %}
+{% block content %}  
+    <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="container" style="position: absolute;z-index: 10000;">
+                <div class="row justify-content-center">
+                    <div class="col-5">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <p class="m-0">{{message}}</p>
+                            <button class="btn-close" aria-label="close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row mb-3">
+            <div class="col-3">
+                <div class="container" style="color: #00724c;">
+                    <h1>Settings</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Categories</button>
+                      <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Currencies</button>
+                      <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Options</button>
+                    </div>
+                  </nav>
+                  <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div class="col-lg-3 me-lg-3 mb-3 mb-md-0">
+                            <table class="table table-hover mt-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><h3>Categories</h3></th>
+                                        <th scope="col"><a href="{% url 'add_category' %}" class="btn" style="background-color: #00724c;color: white;"><i class="fa-solid fa-plus"></i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cat in categories %}
+                                    <tr>
+                                        <td>{{ cat.category_name }}</td> 
+                                        <td style="text-align: left">
+                                            <div class="dropdown dropend">
+                                                <i class="fa-solid fa-bars btn" role="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'edit_category' cat.id %}"><i class="fa-solid fa-pen-to-square"></i><span class="text">  Edit</span></a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'delete_category' cat.id %}"><i class="fa-solid fa-trash-can"></i><span class="text">  Delete</span></a></li>
+                                                </ul>
+                                            </div> 
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="col-lg-3 ms-lg-3">
+                            <table class="table table-hover mt-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><h3>Currencies</h3></th>
+                                        <th scope="col"><a href="{% url 'add_currency' %}" class="btn" style="background-color: #00724c;color: white;"><i class="fa-solid fa-plus"></i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for currency in currencies %}
+                                    <tr>                            
+                                        <td>{{ currency.currency_symbol }}</td> 
+                                        <td style="text-align: left">
+                                            <div class="dropdown dropend">
+                                                <i class="fa-solid fa-bars btn" role="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'edit_currency' currency.id %}"><i class="fa-solid fa-pen-to-square"></i><span class="text">  Edit</span></a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'delete_currency' currency.id %}"><i class="fa-solid fa-trash-can"></i><span class="text">  Delete</span></a></li>
+                                                </ul>
+                                            </div> 
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        <div class="col-lg-3 ms-lg-3">
+                            <table class="table table-hover mt-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><h3>Options</h3></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>                            
+                                        <td><a style="color: #00724c;" href="{% url 'change_password' %}">Change password</a></td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+{% endblock %}
+
+
+

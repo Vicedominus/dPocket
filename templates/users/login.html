@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <a class="nav-link text-light" href="{% url 'signup' %}">Sign Up</a>
+    <a class="nav-link text-light" href="{% url 'home' %}">Home</a>
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="container" style="position: absolute;z-index: 10000;">
+                <div class="row justify-content-center">
+                    <div class="col-5">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <p class="m-0">{{message}}</p>
+                            <button class="btn-close" aria-label="close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                <div class="container" style="color: #00724c;">
+                    <h1>Login</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3 mb-3">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="container">
+                    <form method="post" action="" novalidate>{% csrf_token %}
+                        <div class="form">
+                            {% if form.non_field_errors %}
+                                {% for error in form.non_field_errors %}
+                                <div class="container">
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <p class="m-0">{{error}}</p>
+                                        <button class="btn-close" aria-label="close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="container mb-2">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Email:</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="container mb-2">
+                                <label for="{{ form.password.id_for_label }}" class="form-label">Password:</label>
+                                    {{ form.password }}                                    
+                                </div>  
+                            </div>
+                            <div class="container text-end">
+                                <a href="{% url 'reset_password' %}"  style="color: #00724c;">Forgot password?</a>
+                            </div>
+                            <div class="container">
+                                <input type="submit" value="Login" class="btn mt-2" style="background-color: #00724c;color: white;">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>       
+{% endblock %}
+{% block scripts %}
+    <script>
+        const form = document.querySelector("form")
+
+        form.addEventListener('submit', e => {
+            if (!form.checkValidity()) {
+                e.preventDefault()
+            }
+
+            form.classList.add('was-validated')
+        })
+    </script> 
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
