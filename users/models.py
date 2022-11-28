@@ -3,13 +3,15 @@ from django.contrib.auth.models import PermissionsMixin, BaseUserManager, Abstra
 
 from django.utils import timezone
 
-# Create your models here. 
-# https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User
-# https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#custom-users-admin-full-example
+# --------- User model with email as username field with a custom User Manager. -------- #
+
 class CustomUserManager(BaseUserManager):
-    """Custom UserManager to create the CustomUser objects"""
+    """
+    Custom UserManager to create the CustomUser objects
+    """
 
     def create_user(self, email, password, **other_fields):
+        """Create a user with email and password, normalize the email, set the password"""
         email = self.normalize_email(email)
         user = self.model(email=email, **other_fields)
         user.set_password(password)
@@ -17,6 +19,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **other_fields):
+        """Create a super user with create_user() but set superuser permissions"""
         other_fields.setdefault('is_staff', True)
         other_fields.setdefault('is_superuser', True)
         other_fields.setdefault('is_active', True)
@@ -25,8 +28,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Custom User to work with instead of working directly on default User"""
-    
+    """
+    Custom User to work with instead of working directly on default User. The email is the username field.
+    """
     email = models.EmailField(unique=True)
     start_date = models.DateTimeField(default=timezone.now)
 
@@ -42,3 +46,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+# Ref
+# https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User
+# https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#custom-users-admin-full-example

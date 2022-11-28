@@ -7,9 +7,11 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from statement.models import Category, Currency
 from .forms import CategoryForm, CurrencyForm
 
-########### SETTINGS RELATED VIEWS: #################
+# ---------------- SETTINGS RELATED VIEWS: ---------------------- #
 class SettingsTemplateView(LoginRequiredMixin, TemplateView):
-
+    """
+    A view for rendering the user's settings
+    """
     template_name = 'settings/settings.html'
 
     def get_context_data(self, **kwargs):
@@ -17,11 +19,15 @@ class SettingsTemplateView(LoginRequiredMixin, TemplateView):
         context['categories'] = Category.objects.filter(user=self.request.user)
         context['currencies'] = Currency.objects.filter(user=self.request.user)
         return context
-##################### END #################################
+
+# ---------------------- END -------------------------- #
 
 
-########### CAREGORIES RELATED VIEWS: #################
+# ---------------- CAREGORIES RELATED VIEWS: ---------------------- #
 class CategoryCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    A view for creating a new category with a form
+    """
     login_url = reverse_lazy('login')
     
     model = Category
@@ -36,6 +42,9 @@ class CategoryCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 class CategoryUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    A view for updating categories with a form
+    """
     login_url = reverse_lazy('login')
     model = Category
     form_class = CategoryForm
@@ -50,6 +59,9 @@ class CategoryUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return super().form_valid(form)
 
 class CategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    """
+    A view for deleting a category
+    """
     login_url = reverse_lazy('login')
     model = Category
     context_object_name = 'category'
@@ -57,10 +69,15 @@ class CategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'settings/delete_category.html'
 
     success_message = "The category was deleted successfully"
-##################### END #################################
 
-########### CURENCIES RELATED VIEWS: #################
+# ----------------- END  -------------------------- #
+
+
+#  ----------- CURENCIES RELATED VIEWS: -------------------- #
 class CurrencyCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    A view for creating a new currency with a form
+    """
     login_url = reverse_lazy('login')
     
     model = Currency
@@ -75,6 +92,9 @@ class CurrencyCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 class CurrencyUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    A view for updating currencies with a form
+    """
     login_url = reverse_lazy('login')
     model = Currency
     form_class = CurrencyForm
@@ -89,11 +109,15 @@ class CurrencyUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return super().form_valid(form)
 
 class CurrencyDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    """
+    A view for deleting a currency
+    """
     login_url = reverse_lazy('login')
     model = Currency
     context_object_name = 'currency'
     success_url = reverse_lazy('settings')
     template_name = 'settings/delete_currency.html'
 
-    success_message = "The currency was deleted successfully" 
-##################### END #################################
+    success_message = "The currency was deleted successfully"
+
+# -------------------- END --------------------------- #

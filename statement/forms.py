@@ -3,6 +3,9 @@ from .models import Category, Account, Movement, Currency
        
 
 class MovementForm(forms.ModelForm):
+    """
+    A form representing the Movement model
+    """
     class Meta:
         model = Movement
 
@@ -25,11 +28,15 @@ class MovementForm(forms.ModelForm):
 
 
 class AccountForm(forms.ModelForm):
+    """
+    A form representing the Account model
+    """
     class Meta:
         model = Account
         fields = ('account_name', 'account_amount', 'currency', )
 
     def __init__(self, *args, **kwargs):
+        # User authenticated
         self.request = kwargs.pop('request')
         super().__init__(*args, **kwargs)
         self.fields['currency'].queryset = Currency.objects.filter(user=self.request.user)
@@ -40,6 +47,9 @@ class AccountForm(forms.ModelForm):
         
 
 class TransferForm(forms.Form):
+    """
+    A form for creating transfers
+    """
     transfer_date = forms.DateField()
     account_origin = forms.ModelChoiceField(queryset=Account.objects.all())
     amount_origin = forms.DecimalField(max_digits=13, decimal_places=2)

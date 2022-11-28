@@ -4,6 +4,9 @@ from statement.models import Category, Currency
 
 
 class CategoryForm(forms.ModelForm):
+    """
+    A form representing the Category model
+    """
     class Meta:
         model = Category
         fields = ('category_name', )
@@ -14,6 +17,9 @@ class CategoryForm(forms.ModelForm):
 
 
 class CurrencyForm(forms.ModelForm):
+    """
+    A form representing the Currency model
+    """
     class Meta:
         model = Currency
         fields = ('currency_symbol', )

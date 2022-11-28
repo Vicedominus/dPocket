@@ -8,8 +8,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from .models import Movement, Account
 from .forms import AccountForm, MovementForm, TransferForm
 
-# ================== HOME RELATED VIEWS: ================== #
+# --------------- HOME RELATED VIEWS: ------------------ #
+
 class HomeTemplateView(TemplateView):
+    """
+    A view for rendering a template to users log in or sign up
+    """
     template_name = 'statement/home.html'
 
     def get(self, *args, **kwargs):
@@ -17,12 +21,15 @@ class HomeTemplateView(TemplateView):
             return redirect('statement')
         return super().get(*args, **kwargs)
 
-# =================== END =========================== #
+# ---------------------- END -------------------------- #
 
     
-# =============== STATEMENT RELATED VIEWS: ==================== #
-class StatementTemplateView(LoginRequiredMixin, TemplateView):
+# ------------------ STATEMENT RELATED VIEWS: --------------------- #
 
+class StatementTemplateView(LoginRequiredMixin, TemplateView):
+    """
+    A view dor renderring the main page of the app
+    """
     template_name = 'statement/statement.html'
 
     def get_context_data(self, **kwargs):
@@ -30,11 +37,16 @@ class StatementTemplateView(LoginRequiredMixin, TemplateView):
         context['last_movements'] = Movement.objects.filter(user=self.request.user).order_by('-movement_date')[:10]
         context['accounts'] = Account.objects.filter(user=self.request.user)
         return context
-# ===================== END =============================== #
+
+# ---------------------- END ------------------------- #
 
 
-# ===================== ACCOUNTS RELATED VIEWS: ======================= #
+# ----------------- ACCOUNTS RELATED VIEWS: ------------------------ #
+
 class AccountCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    A view for creating an account with a form
+    """
     login_url = reverse_lazy('login')
     
     model = Account
@@ -42,7 +54,7 @@ class AccountCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('statement')
     template_name = 'statement/add_account.html'
 
-    success_message = "A new account was created successfully"
+    success_message = "A new account was created successfully."
 
     def get_form_kwargs(self):
         """ Passes the request object to the form class.
@@ -52,10 +64,15 @@ class AccountCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
+        """Set form.instance user"""
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class AccountListView(LoginRequiredMixin, ListView):
+    """
+    A view for rendering a list of all the accounts of the user
+    """
     login_url = reverse_lazy('login')
     
     model = Account
@@ -63,11 +80,16 @@ class AccountListView(LoginRequiredMixin, ListView):
     template_name = 'statement/list_account.html'
 
     def get_context_data(self, **kwargs):
+        """Get the accounts of the user from the DB and past them to the context"""
         context = super().get_context_data(**kwargs)
         context['accounts'] = Account.objects.filter(user=self.request.user)
         return context
 
+
 class AccountUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    A view for updating accounts with a form
+    """
     login_url = reverse_lazy('login')
     model = Account
     form_class = AccountForm
@@ -86,10 +108,14 @@ class AccountUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return kwargs
 
     def form_valid(self, form):
+        """Set form.instance user"""
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 class AccountDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    """
+    A view for deleting an account
+    """
     login_url = reverse_lazy('login')
     model = Account
     context_object_name = 'account'
@@ -97,11 +123,16 @@ class AccountDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'statement/delete_account.html'
 
     success_message = "The account was deleted successfully"
-########################## END ############################
+
+# ------------------- END ------------------------- #
 
 
-################ MOVEMENTS RELATED VIEWS: #######################
+# ------------------ MOVEMENTS RELATED VIEWS: ---------------------- #
+
 class MovementListView(LoginRequiredMixin, ListView):
+    """
+    A view for rendering a list of all the movements of the user
+    """
     login_url = reverse_lazy('login')
     
     model = Movement
@@ -115,6 +146,9 @@ class MovementListView(LoginRequiredMixin, ListView):
 
 
 class MovementCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    A view for creating movements with a form
+    """
     login_url = reverse_lazy('login')
     model = Movement
     form_class = MovementForm
@@ -133,7 +167,7 @@ class MovementCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        
+        """Each movement must update the account related to"""
         form.instance.user = self.request.user
         
         account = Account.objects.filter(account_name=form.instance.account).filter(user=self.request.user).first()
@@ -147,7 +181,11 @@ class MovementCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             account.save()
         return super().form_valid(form)
 
+
 class MovementUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    A view for updating movements with a form
+    """
     login_url = reverse_lazy('login')
     model = Movement
     form_class = MovementForm
@@ -169,11 +207,14 @@ class MovementUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return kwargs
 
     def form_valid(self, form):
+        """Each movement must update the account related to"""
         form.instance.user = self.request.user
 
-        """Step 1: Restore the account's amount previous the last movement
-        If the last movement was an outcome add the movement's amount, if it 
-        was an income substract the movemment amount from the account"""
+        """
+        Step 1: Restore the account's amount previous to the last movement. 
+        If the last movement was an outcome add the movement's amount, 
+        if it was an income subtract the movement amount from the account.
+        """
 
         old_movement = Movement.objects.filter(id=self.object.pk).first()
         old_account = old_movement.account
@@ -187,7 +228,9 @@ class MovementUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             old_account.account_amount=account_new_value
             old_account.save()
 
-        """Step 2: Update the account with the new movement's amount provided in the form"""
+        """
+        Step 2: Update the account with the new movement's amount provided in the form.
+        """
 
         account = Account.objects.filter(account_name=form.instance.account).filter(user=self.request.user).first()
              
@@ -201,8 +244,12 @@ class MovementUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             account.save()
 
         return super().form_valid(form)
+        
 
 class MovementDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    """
+    A view for deleting an account
+    """
     login_url = reverse_lazy('login')
     model = Movement
     context_object_name = 'movement'
@@ -213,9 +260,9 @@ class MovementDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     def form_valid(self, form):
 
-        """Wait a minute: Before delete, let's undone the changes made for the movement
-        in the account when was created. If you make a mistake and you want to delete 
-        the movement It is appropiate undone the changes in the model"""
+        """Before deleting, let's undone the changes made for the movement
+        in the account when was created. If you make a mistake and want to delete 
+        the movement It is appropriate to undo the changes in the model"""
 
         old_movement = Movement.objects.filter(id=self.object.pk).first()
         old_account = old_movement.account
@@ -230,10 +277,12 @@ class MovementDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             old_account.save()
 
         return super().form_valid(form)
-########################## END ############################
 
 
 class TransferFormView(LoginRequiredMixin, FormView):
+    """
+    A view for rendering a form for making a transfer from one account to another one
+    """
     login_url = reverse_lazy('login')
 
     form_class = TransferForm
@@ -251,6 +300,9 @@ class TransferFormView(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
+        """
+        A transfer is an income into an account and an outcome for other
+        """
         account_origin = Account.objects.filter(account_name=form.cleaned_data.get('account_origin')).first()
         account_end = Account.objects.filter(account_name=form.cleaned_data.get('account_end')).first()
 
@@ -268,3 +320,5 @@ class TransferFormView(LoginRequiredMixin, FormView):
         movement_out.save()
 
         return super().form_valid(form)
+
+# ------------------- END ----------------------- #

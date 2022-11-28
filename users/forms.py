@@ -1,12 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
-from django import forms
 from django.forms.widgets import EmailInput
 
 from .models import User
 
 
 class CustomUserAuthenticationForm(AuthenticationForm):
-
+    """
+    Authentication form for authenticating the user with email(USERNAME_FIELD) and password.
+    """
     class Meta:
         model = User
         fields = ('username',)
@@ -19,7 +20,9 @@ class CustomUserAuthenticationForm(AuthenticationForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
-
+    """
+    Create users with email and password with the UerCreationForm methods
+    """
     class Meta:
         model = User
         fields = ('email',)
@@ -32,7 +35,9 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserPasswordResetForm(PasswordResetForm):
-
+    """
+    Reset the password of a user with the email
+    """
     class Meta:
         model = User
         fields = ("email",)
@@ -43,7 +48,9 @@ class CustomUserPasswordResetForm(PasswordResetForm):
 
 
 class CustomUserSetPasswordForm(SetPasswordForm):
-    
+    """
+    Set a new password for the user
+    """
     class Meta:
         model = User
         fields = ("email",)
@@ -54,7 +61,9 @@ class CustomUserSetPasswordForm(SetPasswordForm):
         self.fields['new_password2'].widget.attrs.update({'class': 'form-control form-control-sm'})
 
 class CustomUserChangePasswordForm(PasswordChangeForm):
-
+    """
+    Change the user password
+    """
     class Meta:
         model = User
 

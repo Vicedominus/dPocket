@@ -4,20 +4,31 @@ from django.conf import settings
 
 # Create your models here.
 class Currency(models.Model):
+    """
+    A model for creating custom currencies for the user's accounts
+    """
     currency_symbol = models.CharField(max_length=3, blank=False, null=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.currency_symbol
 
+
 class Category(models.Model):
+    """
+    A model for creating custom categories for incomes and outcomes
+    """
     category_name = models.CharField(max_length=50, blank=False, null=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.category_name
+    
 
 class Account(models.Model):
+    """
+    A model for the user's accounts 
+    """
     account_name = models.CharField(max_length=100, blank=False, null=False)
     account_amount = models.DecimalField(blank=False, null=False, max_digits=13, decimal_places=2, default=0.00)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -26,7 +37,11 @@ class Account(models.Model):
     def __str__(self):
         return self.account_name
 
+
 class Movement(models.Model):
+    """
+    A model for registering movements: incomes and outcomes for a user related to an account and with a category
+    """
     MOVEMENT_DIRECTION = (
         ('IN', 'Income'),
         ('OUT', 'Outcome'),

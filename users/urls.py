@@ -5,6 +5,8 @@ from .views import *
 
 urlpatterns = [
     path('login/', AuthLoginView.as_view(), name='login'),
+
+    # The built-in LogoutView without override
     path('logout/', LogoutView.as_view(), name='logout'),
 
     path('signup/', RegistrationFormView.as_view(), name='signup'),
